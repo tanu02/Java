@@ -1,0 +1,90 @@
+package test.macTest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+
+public class SortHotel {
+
+	public static void main(String[] args) {
+
+		String keywords = "breakfast beach citycenter location metro view staff price";
+
+		int hotel_idsCount = 5;
+		int arr[] = { 1, 2, 1, 1, 2 };
+
+		List<Integer> hotel_ids = new ArrayList<>();
+
+		for (int i = 0; i < hotel_idsCount; i++) {
+			int hotel_idsItem = arr[i];
+			hotel_ids.add(hotel_idsItem);
+		}
+
+		int reviewsCount = 5;
+		String input = " This hotel has a nice view of the citycenter. The location is perfect.\n"
+				+ "		   The breakfast is ok. Regarding location, it is quite far from citycenter but price is cheap so it is worth.\n"
+				+ "		   Location is excellent, 5 minutes from citycenter. There is also a metro station very close to the hotel.\n"
+				+ "		   They said I couldn't take my dog and there were other guests with dogs! That is not fair.\n"
+				+ "		   Very friendly staff and good cost-benefit ratio. Location is a bit far from citycenter.\n";
+
+		String lines[] = input.split("\\r?\\n");
+
+		List<String> reviews = new ArrayList<>();
+
+		for (int i = 0; i < reviewsCount; i++) {
+			String reviewsItem = lines[i];
+			reviews.add(reviewsItem);
+		}
+
+		List<Integer> res = sortHotels(keywords, hotel_ids, reviews);
+
+		for (int i = 0; i < res.size(); i++) {
+			System.out.println(res.get(i));
+		}
+
+	}
+
+	// Complete the sort_hotels function below.
+	static List<Integer> sortHotels(String keywords, List<Integer> hotel_ids, List<String> reviews) {
+
+		String a[] = keywords.split(" ");
+		TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+		int count = 0;
+		int reviewLine = 0;
+		for (Integer id : hotel_ids) {
+			if (treeMap.containsKey(id)) {
+				count = treeMap.get(id);
+
+			}
+			count += getCount(a, reviews.get(reviewLine++));
+			treeMap.put(id, count);
+		}
+		TreeMap<Integer, Integer> sortedMap = sortTreeMap(treeMap);
+
+		return new ArrayList<>(sortedMap.keySet());
+
+	}
+
+	static TreeMap<Integer, Integer> sortTreeMap(TreeMap<Integer, Integer> treeMap) {
+
+		TreeMap<Integer, Integer> sortedMap = new TreeMap<>((Integer o1, Integer o2) -> {
+			return treeMap.get(o2) - treeMap.get(o1);
+
+		});
+		sortedMap.putAll(treeMap);
+
+		return sortedMap;
+	}
+
+	static int getCount(String input[], String reviews) {
+
+		int count = 0;
+		for (String word : input) {
+			// if match found increase count
+			if (reviews.contains(word))
+				count++;
+		}
+
+		return count;
+	}
+}
